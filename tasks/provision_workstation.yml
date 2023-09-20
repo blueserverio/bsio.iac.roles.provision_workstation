@@ -1,0 +1,9 @@
+--- 
+- name: Provision Workstation
+  hosts: workstation
+  gather_facts: no
+  tasks:
+    - name: Install Hyper-V Feature
+      import_role: 
+        name: bsio.iac.roles.hyper_v
+        tasks_from: install-hyper-v 

@@ -1,4 +1,4 @@
 ---
 # Hyper-V Virtual Switch Vars
-hyper-v-physical-network-adapter-name: "Ethernet"
-hyper-v-virtual-switch-name: "External"
+hyper_v_physical_network_adapter_name: "Ethernet"
+hyper_v_virtual_switch_name: "External"

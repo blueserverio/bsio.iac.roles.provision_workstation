@@ -2,4 +2,9 @@
 - name: Install Hyper-V Feature
   import_role: 
     name: bsio.iac.roles.hyper_v
-    tasks_from: install-hyper-v 
+    tasks_from: install-hyper-v
+
+- name: Create Hyper-V Virtual Switch
+  import_role: 
+    name: bsio.iac.roles.hyper_v
+    tasks_from: create-virtual-switch

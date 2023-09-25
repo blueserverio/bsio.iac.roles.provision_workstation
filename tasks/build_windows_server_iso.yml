@@ -4,8 +4,8 @@
     file: ensure_oscdimg_installed.yml
 
 - name: Make sure destination ISO dir exists
-  file:
-    path: "{{ windows_iso_file_path | dirname }}"
+  win_file:
+    path: "{{ windows_iso_file_path | win_dirname }}"
     state: directory
 
 - name: Check if Windows Server ISO is already downloaded
@@ -20,8 +20,8 @@
   when: not windows_iso_file_path_file.stat.exists
 
 - name: Make sure destination Server Temp dir exists
-  file:
-    path: "{{ windows_server_temp_setup_file | dirname }}"
+  win_file:
+    path: "{{ windows_server_temp_setup_file | win_dirname }}"
     state: directory
 
 - name: Check if Windows Server Directory is already setup
@@ -40,31 +40,31 @@
 - name: Copy ISO Contents to Temp Directory
   ansible.windows.win_powershell:
     script: |
-      Copy-Item -Path "{{ MountOutput.output[0] }}:\*" -Destination "{{ windows_server_temp_setup_file | dirname }}" -Recurse;
+      Copy-Item -Path "{{ MountOutput.output[0] }}:\*" -Destination "{{ windows_server_temp_setup_file | win_dirname }}" -Recurse;
   when: not windows_file_data.stat.exists
 
 - name: Dismount original ISO
-  ansible.builtin.win_shell: 
-    script: | 
+  ansible.windows.win_powershell:
+    script: |
       Dismount-DiskImage -ImagePath "{{ windows_iso_file_path }}"
   when: not windows_file_data.stat.exists
 
 # Create Vendor Folders:
 - name: Creates directory
-  file:
-    path: '{{ windows_server_temp_setup_file | dirname }}\sources\$OEM$\$$\Setup\Scripts'
+  win_file:
+    path: '{{ windows_server_temp_setup_file | win_dirname }}\sources\$OEM$\$$\Setup\Scripts'
     state: directory
     recurse: yes      
 
 # Copy files
-- copy:
+- win_copy:
     src: "{{ role_path }}/files/ConfigureRemotingForAnsible.ps1"
-    dest: '{{ windows_server_temp_setup_file | dirname }}\sources\$OEM$\$$\Setup\Scripts\ConfigureRemotingForAnsible.ps1'
+    dest: '{{ windows_server_temp_setup_file | win_dirname }}\sources\$OEM$\$$\Setup\Scripts\ConfigureRemotingForAnsible.ps1'
 
-- copy:
+- win_copy:
     src: "{{ role_path }}/files/FixNetwork.ps1"
-    dest: '{{ windows_server_temp_setup_file | dirname }}\sources\$OEM$\$$\Setup\Scripts\FixNetwork.ps1'
+    dest: '{{ windows_server_temp_setup_file | win_dirname }}\sources\$OEM$\$$\Setup\Scripts\FixNetwork.ps1'
 
-- copy:
+- win_copy:
     src: "{{ role_path }}/files/InstallUpdates.ps1"
-    dest: '{{ windows_server_temp_setup_file | dirname }}\sources\$OEM$\$$\Setup\Scripts\InstallUpdates.ps1'
+    dest: '{{ windows_server_temp_setup_file | win_dirname }}\sources\$OEM$\$$\Setup\Scripts\InstallUpdates.ps1'

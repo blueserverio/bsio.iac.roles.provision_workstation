@@ -1,7 +1,7 @@
 ---
 - name: Make sure destination dir exists
-  file:
-    path: "{{ oscdimg_download_path | dirname }}"
+  win_file:
+    path: "{{ oscdimg_download_path | win_dirname }}"
     state: directory
 
 - name: Check if oscdimg is already downloaded
@@ -24,7 +24,7 @@
       if ($isInstalled -eq $false)
       {
           $Ansible.Changed = $true
-          Start-Process -FilePath "{{ oscdimg_download_path }}" -WorkingDirectory "{{ oscdimg_download_path | dirname }}" -Wait -WindowStyle Maximized -ArgumentList "/features OptionId.DeploymentTools /q"
+          Start-Process -FilePath "{{ oscdimg_download_path }}" -WorkingDirectory "{{ oscdimg_download_path | win_dirname }}" -Wait -WindowStyle Maximized -ArgumentList "/features OptionId.DeploymentTools /q"
       }
 
 - name: Ensure that oscdimg is present on the global system path

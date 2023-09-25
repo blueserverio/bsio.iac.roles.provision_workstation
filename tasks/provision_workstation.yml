@@ -8,3 +8,7 @@
   import_role: 
     name: bsio.iac.roles.hyper_v
     tasks_from: create-virtual-switch
+
+- name: Build Windows Server ISO
+  import_tasks: 
+    file: build_windows_server_iso.yml

@@ -1,0 +1,33 @@
+---
+- name: Make sure destination dir exists
+  file:
+    path: "{{ oscdimg_download_path | dirname }}"
+    state: directory
+
+- name: Check if oscdimg is already downloaded
+  win_stat:
+    path: {{ oscdimg_download_path }}
+  register: oscdimg_file_path
+
+- name: Download oscdimg if not exists
+  ansible.builtin.win_get_url:
+    url: "{{ oscdimg_download_url }}"
+    dest: "{{ oscdimg_download_path }}"
+  when: not oscdimg_file_path.stat.exists
+
+- name: Install adksetup
+  ansible.windows.win_powershell:
+    script: |
+      $Ansible.Changed = $false
+      $isInstalled = Test-Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{{ oscdimg_application_id }}";
+
+      if ($isInstalled -eq $false)
+      {
+          $Ansible.Changed = $true
+          Start-Process -FilePath "{{ oscdimg_download_path }}" -WorkingDirectory "{{ oscdimg_download_path | dirname }}" -Wait -WindowStyle Maximized -ArgumentList "/features OptionId.DeploymentTools /q"
+      }
+
+- name: Ensure that oscdimg is present on the global system path
+  ansible.windows.win_path:
+    elements:
+    - "{{ oscdimg_install_path }}"

@@ -6,7 +6,7 @@
 
 - name: Check if oscdimg is already downloaded
   win_stat:
-    path: {{ oscdimg_download_path }}
+    path: "{{ oscdimg_download_path }}"
   register: oscdimg_file_path
 
 - name: Download oscdimg if not exists

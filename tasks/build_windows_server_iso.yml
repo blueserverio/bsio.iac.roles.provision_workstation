@@ -68,3 +68,7 @@
 - win_copy:
     src: "{{ role_path }}/files/InstallUpdates.ps1"
     dest: '{{ windows_server_temp_setup_file | win_dirname }}\sources\$OEM$\$$\Setup\Scripts\InstallUpdates.ps1'
+
+- win_copy:
+    src: "{{ role_path }}/files/Autounattend.xml"
+    dest: '{{ windows_server_temp_setup_file | win_dirname }}\Autounattend.xml'

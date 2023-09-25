@@ -1,2 +1,9 @@
 ---
+oscdimg_download_path: 'C:\Temp\adksetup.exe'
+oscdimg_download_url: "https://download.microsoft.com/download/6/7/4/674ec7db-7c89-4f2b-8363-689055c2b430/adk/adksetup.exe"
+oscdimg_application_id: '{35712213-CBA3-43D3-F4A1-90DA83F27B23}'
+oscdimg_install_path: '%programfiles(x86)%\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\amd64\Oscdimg'
 
+windows_server_temp_setup_file: 'C:\Temp\WindowsServer2022\setup.exe'
+windows_server_download_url: "https://software-static.download.prss.microsoft.com/sg/download/888969d5-f34g-4e03-ac9d-1f9786c66749/SERVER_EVAL_x64FRE_en-us.iso"
+windows_iso_file_path: 'C:\ISOs\windows_server_2022.iso'

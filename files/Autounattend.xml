@@ -173,6 +173,16 @@
                         <Name>Administrator</Name>
                         <Description>Administrator</Description>
                     </LocalAccount>
+                    <LocalAccount wcm:action="add">
+                        <Password>
+                            <Value>Password1!</Value>
+                            <PlainText>true</PlainText>
+                        </Password>
+                        <Group>administrators</Group>
+                        <DisplayName>Ansible</DisplayName>
+                        <Name>Ansible</Name>
+                        <Description>Ansible</Description>
+                    </LocalAccount>
                 </LocalAccounts>
             </UserAccounts>
         </component>

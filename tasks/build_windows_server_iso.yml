@@ -57,18 +57,24 @@
     recurse: yes      
 
 # Copy files
-- win_copy:
+- name: ConfigureRemotingForAnsible.ps1
+  win_copy:
     src: "{{ role_path }}/files/ConfigureRemotingForAnsible.ps1"
     dest: '{{ windows_server_temp_setup_file | win_dirname }}\sources\$OEM$\$$\Setup\Scripts\ConfigureRemotingForAnsible.ps1'
 
-- win_copy:
+- name: FixNetwork.ps1
+  win_copy:
     src: "{{ role_path }}/files/FixNetwork.ps1"
     dest: '{{ windows_server_temp_setup_file | win_dirname }}\sources\$OEM$\$$\Setup\Scripts\FixNetwork.ps1'
 
-- win_copy:
-    src: "{{ role_path }}/files/InstallUpdates.ps1"
-    dest: '{{ windows_server_temp_setup_file | win_dirname }}\sources\$OEM$\$$\Setup\Scripts\InstallUpdates.ps1'
-
-- win_copy:
+- name: Autounattend.xml
+  win_copy:
     src: "{{ role_path }}/files/Autounattend.xml"
     dest: '{{ windows_server_temp_setup_file | win_dirname }}\Autounattend.xml'
+
+# Create the ISO
+- name: Create Windows Server ISO
+  register: win_out
+  ansible.windows.win_command:
+    cmd: oscdimg.exe -m -o -u2 -udfver102 -bootdata:2#p0,e,b{{ windows_server_temp_setup_file | win_dirname }}\boot\etfsboot.com#pEF,e,b{{ windows_server_temp_setup_file | win_dirname }}\efi\microsoft\boot\efisys_noprompt.bin {{ windows_server_temp_setup_file | win_dirname }} {{ windows_iso_output_path }}
+    chdir: "{{ oscdimg_install_path }}"

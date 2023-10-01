@@ -72,9 +72,15 @@
     src: "{{ role_path }}/files/Autounattend.xml"
     dest: '{{ windows_server_temp_setup_file | win_dirname }}\Autounattend.xml'
 
+- name: Check if Windows Server Unattended ISO is already created
+  win_stat:
+    path: "{{ windows_iso_output_path }}"
+  register: windows_unattended_iso_file_path_file
+
 # Create the ISO
 - name: Create Windows Server ISO
   register: win_out
   ansible.windows.win_command:
     cmd: oscdimg.exe -m -o -u2 -udfver102 -bootdata:2#p0,e,b{{ windows_server_temp_setup_file | win_dirname }}\boot\etfsboot.com#pEF,e,b{{ windows_server_temp_setup_file | win_dirname }}\efi\microsoft\boot\efisys_noprompt.bin {{ windows_server_temp_setup_file | win_dirname }} {{ windows_iso_output_path }}
     chdir: "{{ oscdimg_install_path }}"
+  when: not windows_unattended_iso_file_path_file.stat.exists

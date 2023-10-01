@@ -12,3 +12,8 @@
 - name: Build Windows Server ISO
   import_tasks: 
     file: build_windows_server_iso.yml
+
+- name: Build Server Templates
+  import_role: 
+    name: bsio.iac.roles.hyper_v
+    tasks_from: create_server_templates.yml

@@ -31,7 +31,7 @@ wait_for_timeout: 900
     - name: Install Hyper-V Feature
       include_role: 
         name: bsio.iac.roles.hyper_v
-        tasks_from: install-hyper-v
+        tasks_from: install_hyper_v
 ```
 
 ## Contributing

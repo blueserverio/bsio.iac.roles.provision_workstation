@@ -1,0 +1,105 @@
+--- 
+- name: Install required packages
+  become: true
+  apt:
+    name:
+      - xorriso
+    state: present
+  delegate_to: localhost
+
+- name: Create a working directory
+  become: true
+  file:
+    path: /tmp/ubuntu_iso
+    state: directory
+  delegate_to: localhost
+
+- name: Check if Ubuntu Server 22.04 ISO is already downloaded
+  become: true
+  stat:
+    path: "{{ linux_iso_file_path }}"
+  register: linux_iso_file_path_file
+  delegate_to: localhost
+
+- name: Download Ubuntu Server 22.04 ISO
+  become: true
+  get_url:
+    url: "{{ linux_iso_download_url }}"
+    dest: "{{ linux_iso_file_path }}"
+    timeout: 600
+  delegate_to: localhost
+  when: not linux_iso_file_path_file.stat.exists
+
+- name: Mount the original ISO
+  become: true
+  mount:
+    path: /mnt/ubuntu_iso
+    src: "{{ linux_iso_file_path }}"
+    fstype: iso9660
+    state: mounted
+  delegate_to: localhost
+
+- name: Copy ISO contents to working directory
+  become: true
+  command: cp -rT /mnt/ubuntu_iso /tmp/ubuntu_iso
+  delegate_to: localhost
+
+- name: Unmount the original ISO
+  become: true
+  mount:
+    path: /mnt/ubuntu_iso
+    state: unmounted
+  delegate_to: localhost
+
+- name: Create a nocloud directory
+  become: true
+  file:
+    path: /tmp/ubuntu_iso/nocloud/
+    state: directory
+  delegate_to: localhost
+
+- name: Generate and install the user-data file
+  become: true
+  template:
+    src: user-data.j2
+    dest: "/tmp/ubuntu_iso/nocloud/user-data"
+  delegate_to: localhost
+
+- name: Place meta-data file in the ISO direcotry
+  become: true
+  copy:
+    src: "{{ role_path }}/files/ubuntu/meta-data"
+    dest: /tmp/ubuntu_iso/nocloud/meta-data
+  delegate_to: localhost
+
+- name: Place grub.cfg in the ISO directory
+  become: true
+  copy:
+    src: "{{ role_path }}/files/ubuntu/grub.cfg"
+    dest:  /tmp/ubuntu_iso/boot/grub/grub.cfg
+  delegate_to: localhost
+
+- name: Disable mandatory md5 checksum on boot
+  become: true
+  shell: |
+    md5sum /tmp/ubuntu_iso/.disk/info > /tmp/ubuntu_iso/md5sum.txt
+    sed -i 's|/tmp/ubuntu_iso/|./|g' /tmp/ubuntu_iso/md5sum.txt
+  delegate_to: localhost
+
+- name: Create the custom ISO
+  become: true
+  command: >
+    xorriso -as mkisofs -r -V "Custom Ubuntu Install" -J -b boot/grub/i386-pc/eltorito.img -c boot.catalog -no-emul-boot -boot-load-size 4 -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin -boot-info-table -input-charset utf-8 -eltorito-alt-boot -isohybrid-gpt-basdat -o "{{ local_linux_iso_output_path }}" /tmp/ubuntu_iso/
+  delegate_to: localhost
+
+# - name: Clean up working directory
+#   become: true
+#   file:
+#     path: /tmp/ubuntu_iso
+#     state: absent
+#   delegate_to: localhost
+
+- name: Copy the ISO file to Windows
+  win_copy:
+    src: "{{ local_linux_iso_output_path }}"
+    dest: "{{ linux_iso_output_path }}"  

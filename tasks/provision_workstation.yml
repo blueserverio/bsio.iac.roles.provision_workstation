@@ -13,6 +13,10 @@
   import_tasks: 
     file: build_windows_server_iso.yml
 
+- name: Build Ubuntu Server ISO
+  import_tasks: 
+    file: build_ubuntu_server_iso.yml
+
 - name: Build Server Templates
   import_role: 
     name: bsio.iac.roles.hyper_v

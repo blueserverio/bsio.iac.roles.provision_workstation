@@ -7,3 +7,6 @@ oscdimg_install_path: '%programfiles(x86)%\Windows Kits\10\Assessment and Deploy
 windows_server_temp_setup_file: 'C:\Temp\WindowsServer2022\setup.exe'
 windows_server_download_url: "https://software-static.download.prss.microsoft.com/sg/download/888969d5-f34g-4e03-ac9d-1f9786c66749/SERVER_EVAL_x64FRE_en-us.iso"
 windows_iso_file_path: 'C:\ISOs\windows_server_2022.iso'
+
+linux_iso_file_path: '/tmp/ubuntu-22.04-live-server-amd64.iso'
+linux_iso_download_url: 'http://releases.ubuntu.com/22.04/ubuntu-22.04-live-server-amd64.iso'

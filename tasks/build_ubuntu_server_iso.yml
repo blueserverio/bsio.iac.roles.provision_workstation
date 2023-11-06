@@ -92,12 +92,12 @@
     xorriso -as mkisofs -r -V "Custom Ubuntu Install" -J -b boot/grub/i386-pc/eltorito.img -c boot.catalog -no-emul-boot -boot-load-size 4 -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin -boot-info-table -input-charset utf-8 -eltorito-alt-boot -isohybrid-gpt-basdat -o "{{ local_linux_iso_output_path }}" /tmp/ubuntu_iso/
   delegate_to: localhost
 
-# - name: Clean up working directory
-#   become: true
-#   file:
-#     path: /tmp/ubuntu_iso
-#     state: absent
-#   delegate_to: localhost
+- name: Clean up working directory
+  become: true
+  file:
+    path: /tmp/ubuntu_iso
+    state: absent
+  delegate_to: localhost
 
 - name: Copy the ISO file to Windows
   win_copy:

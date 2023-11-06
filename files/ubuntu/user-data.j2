@@ -1,0 +1,17 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US
+  keyboard:
+    layout: us
+    variant: ""
+  identity:
+    hostname: ansible
+    username: ansible
+    password: "$6$MIgCrr7sLaNY0cEX$9iHQiVejna2hn5GRwpClbLVW2SYarejpm9AJK3BnF5fdaOtLCeYuJipFzIEE7Xu8W3GLwfmoIFJbkOHV17jsM1" 
+  ssh:
+    install-server: yes
+  packages:
+    - linux-azure
+  late-commands:
+    - echo 'ansible ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu

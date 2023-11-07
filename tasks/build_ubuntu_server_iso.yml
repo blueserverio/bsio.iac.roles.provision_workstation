@@ -39,11 +39,24 @@
     state: mounted
   delegate_to: localhost
 
+- name: Create isolinux directory in ISO Working Directory
+  become: true
+  file:
+    path: /tmp/ubuntu_iso/isolinux
+    state: directory
+  delegate_to: localhost
+
 - name: Copy ISO contents to working directory
   become: true
   command: cp -rT /mnt/ubuntu_iso /tmp/ubuntu_iso
   delegate_to: localhost
 
+- name: Create isohdpfx.bin file
+  become: true
+  command: >
+    dd if={{ linux_iso_file_path }} bs=512 count=1 of=/tmp/ubuntu_iso/isolinux/isohdpfx.bin
+  delegate_to: localhost
+  
 - name: Unmount the original ISO
   become: true
   mount:
@@ -61,7 +74,7 @@
 - name: Generate and install the user-data file
   become: true
   template:
-    src: user-data.j2
+    src: "{{ role_path }}/files/ubuntu/user-data.j2"
     dest: "/tmp/ubuntu_iso/nocloud/user-data"
   delegate_to: localhost
 
@@ -89,7 +102,7 @@
 - name: Create the custom ISO
   become: true
   command: >
-    xorriso -as mkisofs -r -V "Custom Ubuntu Install" -J -b boot/grub/i386-pc/eltorito.img -c boot.catalog -no-emul-boot -boot-load-size 4 -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin -boot-info-table -input-charset utf-8 -eltorito-alt-boot -isohybrid-gpt-basdat -o "{{ local_linux_iso_output_path }}" /tmp/ubuntu_iso/
+    xorriso -as mkisofs -r -V "Custom Ubuntu Install" -J -b boot/grub/i386-pc/eltorito.img -c boot.catalog -no-emul-boot -boot-load-size 4 -isohybrid-mbr /tmp/ubuntu_iso/isolinux/isohdpfx.bin -boot-info-table -input-charset utf-8 -eltorito-alt-boot -isohybrid-gpt-basdat -o "{{ local_linux_iso_output_path }}" /tmp/ubuntu_iso/
   delegate_to: localhost
 
 - name: Clean up working directory
